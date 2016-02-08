@@ -358,7 +358,7 @@ public:
     FILE** operator&()          { return &file; }
     FILE* operator=(FILE* pnew) { return file = pnew; }
     bool operator!()            { return (file == NULL); }
-
+    FILE* Get() const           { return file; }
 
     //
     // Stream subset
