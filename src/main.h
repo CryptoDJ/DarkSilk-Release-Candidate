@@ -214,7 +214,7 @@ FILE* AppendBlockFile(unsigned int& nFileRet);
 FILE* OpenUndoFile(const CDiskBlockPos &pos, bool fReadOnly = false);
 
 /// Position on disk for a particular transaction.
-class CDiskTxPos
+/*class CDiskTxPos
 {
 public:
     unsigned int nFile;
@@ -262,6 +262,37 @@ public:
             return "null";
         else
             return strprintf("(nFile=%u, nBlockPos=%u, nTxPos=%u)", nFile, nBlockPos, nTxPos);
+    }
+};*/
+struct CDiskTxPos : public CDiskBlockPos
+{
+    unsigned int nTxOffset; // after header
+
+    unsigned int nFile;
+    unsigned int nBlockPos;
+    unsigned int nTxPos;
+
+    ADD_SERIALIZE_METHODS;
+
+    template <typename Stream, typename Operation>
+    inline void SerializationOp(Stream& s, Operation ser_action, int nType, int nVersion) {
+        READWRITE(*(CDiskBlockPos*)this);
+        READWRITE(VARINT(nTxOffset));
+    }
+
+    CDiskTxPos(const CDiskBlockPos &blockIn, unsigned int nTxOffsetIn) : CDiskBlockPos(blockIn.nFile, blockIn.nPos), nTxOffset(nTxOffsetIn) {
+    }
+
+    CDiskTxPos() {
+        SetNull();
+    }
+
+    void SetNull() {
+        CDiskBlockPos::SetNull();
+        nFile = (unsigned int) -1;
+        nBlockPos = 0;
+        nTxPos = 0;
+        nTxOffset = 0;
     }
 };
 
