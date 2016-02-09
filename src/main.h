@@ -280,6 +280,13 @@ struct CDiskTxPos : public CDiskBlockPos
         READWRITE(VARINT(nTxOffset));
     }
 
+    CDiskTxPos(unsigned int nFileIn, unsigned int nBlockPosIn, unsigned int nTxPosIn)
+    {
+        nFile = nFileIn;
+        nBlockPos = nBlockPosIn;
+        nTxPos = nTxPosIn;
+    }
+
     CDiskTxPos(const CDiskBlockPos &blockIn, unsigned int nTxOffsetIn) : CDiskBlockPos(blockIn.nFile, blockIn.nPos), nTxOffset(nTxOffsetIn) {
     }
 
@@ -293,6 +300,14 @@ struct CDiskTxPos : public CDiskBlockPos
         nBlockPos = 0;
         nTxPos = 0;
         nTxOffset = 0;
+    }
+
+    std::string ToString() const
+    {
+        if (IsNull())
+            return "null";
+        else
+            return strprintf("(nFile=%u, nBlockPos=%u, nTxPos=%u, nTxOffset=%u \n)", nFile, nBlockPos, nTxPos, nTxOffset);
     }
 };
 
