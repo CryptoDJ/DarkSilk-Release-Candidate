@@ -331,6 +331,15 @@ public:
             nFlags |= BLOCK_STAKE_MODIFIER;
     }
 
+    CDiskBlockPos GetBlockPos() const {
+        CDiskBlockPos ret;
+        if (nStatus & BLOCK_HAVE_DATA) {
+            ret.nFile = nFile;
+            ret.nPos  = nDataPos;
+        }
+        return ret;
+    }
+
     std::string ToString() const
     {
         return strprintf("CBlockIndex(nprev=%p, pnext=%p, nFile=%u, nBlockPos=%-6d nHeight=%d, nMint=%s, nMoneySupply=%s, nFlags=(%s)(%d)(%s), nStakeModifier=%016x, hashProof=%s, prevoutStake=(%s), nStakeTime=%d merkle=%s, hashBlock=%s)",
