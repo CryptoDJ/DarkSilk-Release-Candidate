@@ -4238,7 +4238,8 @@ bool DisconnectBlock(CBlock& block, CValidationState& state, CBlockIndex* pindex
 
     bool fClean = true;
 
-    CBlockUndo blockUndo;
+    //TODO (Amir): put back for chainActive.
+    /*CBlockUndo blockUndo;
     CDiskBlockPos pos = pindex->GetUndoPos();
     if (pos.IsNull())
         return error("DisconnectBlock() : no undo data available");
@@ -4314,6 +4315,7 @@ bool DisconnectBlock(CBlock& block, CValidationState& state, CBlockIndex* pindex
     } else {
         return fClean;
     }
+    */
 }
 
 ///! Disconnect chainActive's tip.
@@ -4326,14 +4328,14 @@ bool static DisconnectTip(CValidationState &state) {
     if (!ReadBlockFromDisk(block, pindexDelete))
         return state.Abort("Failed to read block");
     // Apply the block atomically to the chain state.
-    int64_t nStart = GetTimeMicros();
+    /*int64_t nStart = GetTimeMicros();
     {
         CCoinsViewCache view(pcoinsTip);
         if (!DisconnectBlock(block, state, pindexDelete, view))
             return error("DisconnectTip() : DisconnectBlock %s failed", pindexDelete->GetBlockHash().ToString());
         assert(view.Flush());
     }
-    /*
+
     LogPrint("bench", "- Disconnect block: %.2fms\n", (GetTimeMicros() - nStart) * 0.001);
     // Write the chain state to disk, if necessary.
     if (!FlushStateToDisk(state, FLUSH_STATE_IF_NEEDED))
