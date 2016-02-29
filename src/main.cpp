@@ -4140,11 +4140,13 @@ void static UpdateTip(CBlockIndex *pindexNew) {
       chainActive.Tip()->GetBlockHash().ToString(), chainActive.Height(), log(chainActive.Tip()->nChainWork.getdouble())/log(2.0), (unsigned long)chainActive.Tip()->nChainTx,
       DateTimeStrFormat("%Y-%m-%d %H:%M:%S", chainActive.Tip()->GetBlockTime()),
       Checkpoints::GuessVerificationProgress(chainActive.Tip()), (unsigned int)pcoinsTip->GetCacheSize());
+    */
 
     cvBlockChange.notify_all();
 
     // Check the version of the last 100 blocks to see if we need to upgrade:
     static bool fWarned = false;
+
     if (!IsInitialBlockDownload() && !fWarned)
     {
         int nUpgraded = 0;
@@ -4164,14 +4166,14 @@ void static UpdateTip(CBlockIndex *pindexNew) {
             CAlert::Notify(strMiscWarning, true);
             fWarned = true;
         }
-    }*/
+    }
 }
 
 ///! Disconnect chainActive's tip.
 bool static DisconnectTip(CValidationState &state) {
     CBlockIndex *pindexDelete = chainActive.Tip();
     assert(pindexDelete);
-    /*mempool.check(pcoinsTip);
+    mempool.check(pcoinsTip);
     // Read block from disk.
     CBlock block;
     if (!ReadBlockFromDisk(block, pindexDelete))
@@ -4184,6 +4186,7 @@ bool static DisconnectTip(CValidationState &state) {
             return error("DisconnectTip() : DisconnectBlock %s failed", pindexDelete->GetBlockHash().ToString());
         assert(view.Flush());
     }
+    /*
     LogPrint("bench", "- Disconnect block: %.2fms\n", (GetTimeMicros() - nStart) * 0.001);
     // Write the chain state to disk, if necessary.
     if (!FlushStateToDisk(state, FLUSH_STATE_IF_NEEDED))
