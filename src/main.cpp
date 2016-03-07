@@ -4460,8 +4460,8 @@ bool static DisconnectTip(CValidationState& state, const Consensus::Params& cons
     if (!FlushStateToDisk(state, FLUSH_STATE_IF_NEEDED))
         return false;
     // Resurrect mempool transactions from the disconnected block.
-    /*std::vector<uint256> vHashUpdate;
-    BOOST_FOREACH(const CTransaction &tx, block.vtx) {
+    std::vector<uint256> vHashUpdate;
+    BOOST_FOREACH(CTransaction &tx, block.vtx) {
         // ignore validation errors in resurrected transactions
         list<CTransaction> removed;
         CValidationState stateDummy;
@@ -4483,7 +4483,7 @@ bool static DisconnectTip(CValidationState& state, const Consensus::Params& cons
     // 0-confirmed or conflicted:
     BOOST_FOREACH(const CTransaction &tx, block.vtx) {
         SyncWithWallets(tx, pindexDelete->pprev, NULL);
-    }*/
+    }
     return true;
 }
 
