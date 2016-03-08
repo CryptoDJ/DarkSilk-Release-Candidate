@@ -244,6 +244,7 @@ HEADERS +=  src/qt/darksilkgui.h \
             src/crypto/scrypt/scrypt.h \
             src/crypto/scrypt/pbkdf2.h \
             src/serialize.h \
+            src/limitedmap.h \
             src/main.h \
             src/miner.h \
             src/net.h \

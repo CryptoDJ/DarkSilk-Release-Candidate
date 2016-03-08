@@ -108,7 +108,7 @@ CCriticalSection cs_vNodes;
 map<CInv, CDataStream> mapRelay;
 deque<pair<int64_t, CInv> > vRelayExpiration;
 CCriticalSection cs_mapRelay;
-map<CInv, int64_t> mapAlreadyAskedFor;
+limitedmap<CInv, int64_t> mapAlreadyAskedFor(MAX_INV_SZ);
 
 static deque<string> vOneShots;
 CCriticalSection cs_vOneShots;
@@ -2418,24 +2418,8 @@ bool CBanDB::Read(banmap_t& banSet)
     return true;
 }
 
-void DumpBanlist()
-{
-    CNode::SweepBanned(); // clean unused entries (if bantime has expired)
-
-    if (!CNode::BannedSetIsDirty())
-        return;
-
-    int64_t nStart = GetTimeMillis();
-
-    CBanDB bandb;
-    banmap_t banmap;
-    CNode::GetBanned(banmap);
-    if (bandb.Write(banmap))
-        CNode::SetBannedSetDirty(false);
-
-    LogPrint("net", "Flushed %d banned node ips/subnets to banlist.dat  %dms\n",
-        banmap.size(), GetTimeMillis() - nStart);
-}
+unsigned int ReceiveFloodSize() { return 1000*GetArg("-maxreceivebuffer", 5*1000); }
+unsigned int SendBufferSize() { return 1000*GetArg("-maxsendbuffer", 1*1000); }
 
 CNode::CNode(SOCKET hSocketIn, CAddress addrIn, std::string addrNameIn, bool fInboundIn):
     ssSend(SER_NETWORK, INIT_PROTO_VERSION)
@@ -2515,10 +2499,17 @@ CNode::~CNode()
 
 void CNode::AskFor(const CInv& inv)
 {
+    if (mapAskFor.size() > MAPASKFOR_MAX_SZ)
+        return;
     // We're using mapAskFor as a priority queue,
     // the key is the earliest time the request can be sent
-    int64_t& nRequestTime = mapAlreadyAskedFor[inv];
-    LogPrint("net", "askfor %s   %d (%s)\n", inv.ToString(), nRequestTime, DateTimeStrFormat("%H:%M:%S", nRequestTime/1000000));
+    int64_t nRequestTime;
+    limitedmap<CInv, int64_t>::const_iterator it = mapAlreadyAskedFor.find(inv);
+    if (it != mapAlreadyAskedFor.end())
+        nRequestTime = it->second;
+    else
+        nRequestTime = 0;
+    LogPrint("net", "askfor %s  %d (%s) peer=%d\n", inv.ToString(), nRequestTime, DateTimeStrFormat("%H:%M:%S", nRequestTime/1000000), id);
 
     // Make sure not to reuse time indexes to keep things in the same order
     int64_t nNow = (GetTime() - 1) * 1000000;
@@ -2529,6 +2520,10 @@ void CNode::AskFor(const CInv& inv)
 
     // Each retry is 2 minutes after the last
     nRequestTime = std::max(nRequestTime + 2 * 60 * 1000000, nNow);
+    if (it != mapAlreadyAskedFor.end())
+        mapAlreadyAskedFor.update(it, nRequestTime);
+    else
+        mapAlreadyAskedFor.insert(std::make_pair(inv, nRequestTime));
     mapAskFor.insert(std::make_pair(nRequestTime, inv));
 }
 
@@ -2586,4 +2581,23 @@ void CNode::EndMessage() UNLOCK_FUNCTION(cs_vSend)
         SocketSendData(this);
 
     LEAVE_CRITICAL_SECTION(cs_vSend);
+}
+
+void DumpBanlist()
+{
+    CNode::SweepBanned(); // clean unused entries (if bantime has expired)
+
+    if (!CNode::BannedSetIsDirty())
+        return;
+
+    int64_t nStart = GetTimeMillis();
+
+    CBanDB bandb;
+    banmap_t banmap;
+    CNode::GetBanned(banmap);
+    if (bandb.Write(banmap))
+        CNode::SetBannedSetDirty(false);
+
+    LogPrint("net", "Flushed %d banned node ips/subnets to banlist.dat  %dms\n",
+        banmap.size(), GetTimeMillis() - nStart);
 }

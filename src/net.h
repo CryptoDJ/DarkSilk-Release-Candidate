@@ -8,13 +8,12 @@
 
 #include <boost/array.hpp>
 #include <boost/foreach.hpp>
+#include <boost/filesystem/path.hpp>
 #include <boost/signals2/signal.hpp>
 
 #include <deque>
 
 #include <stdint.h>
-
-#include <openssl/rand.h>
 
 #ifndef WIN32
 #include <arpa/inet.h>
@@ -23,6 +22,7 @@
 #include "addrman.h"
 #include "compat.h"
 #include "hash.h"
+#include "limitedmap.h"
 #include "mruset.h"
 #include "netbase.h"
 #include "protocol.h"
@@ -32,15 +32,22 @@
 #include "sync.h"
 #include "uint256.h"
 
-class CNode;
+class CAddrMan;
 class CBlockIndex;
-extern int nBestHeight;
+class CNode;
+
+namespace boost {
+    class thread_group;
+} // namespace boost
 
 /** Time between pings automatically sent out for latency probing and keepalive (in seconds). */
 static const int PING_INTERVAL = 2 * 60;
 
 /** Time after which to disconnect, after waiting for a ping response (or inactivity). */
 static const int TIMEOUT_INTERVAL = 20 * 60;
+
+/** The maximum number of entries in an 'inv' protocol message */
+static const unsigned int MAX_INV_SZ = 50000;
 
 /** Maximum length of incoming protocol messages (no message over 2 MiB is currently acceptable). */
 static const unsigned int MAX_PROTOCOL_MESSAGE_LENGTH = 2 * 1024 * 1024;
@@ -56,9 +63,11 @@ static const bool DEFAULT_UPNP = false;
 #endif
 // NOTE: When adjusting this, update rpcnet:setban's help ("24h")
 static const unsigned int DEFAULT_MISBEHAVING_BANTIME = 60 * 60 * 24;  // Default 24-hour ban
+/** The maximum number of entries in mapAskFor */
+static const size_t MAPASKFOR_MAX_SZ = MAX_INV_SZ;
 
-inline unsigned int ReceiveFloodSize() { return 1000*GetArg("-maxreceivebuffer", 5*1000); }
-inline unsigned int SendBufferSize() { return 1000*GetArg("-maxsendbuffer", 1*1000); }
+unsigned int ReceiveFloodSize();
+unsigned int SendBufferSize();
 
 void AddOneShot(std::string strDest);
 bool RecvLine(SOCKET hSocket, std::string& strLine);
@@ -124,7 +133,7 @@ bool IsReachable(const CNetAddr &addr);
 void SetReachable(enum Network net, bool fFlag = true);
 CAddress GetLocalAddress(const CNetAddr *paddrPeer = NULL);
 
-
+extern int nBestHeight;
 extern bool fDiscover;
 extern bool fListen;
 extern uint64_t nLocalServices;
@@ -137,7 +146,7 @@ extern CCriticalSection cs_vNodes;
 extern std::map<CInv, CDataStream> mapRelay;
 extern std::deque<std::pair<int64_t, CInv> > vRelayExpiration;
 extern CCriticalSection cs_mapRelay;
-extern std::map<CInv, int64_t> mapAlreadyAskedFor;
+extern limitedmap<CInv, int64_t> mapAlreadyAskedFor;
 
 extern std::vector<std::string> vAddedNodes;
 extern CCriticalSection cs_vAddedNodes;
@@ -370,7 +379,6 @@ protected:
     void Fuzz(int nChance); // modifies ssSend
 
 public:
-    
     uint256 hashContinue;
     bool fStartSync;
     int nStartingHeight;    
