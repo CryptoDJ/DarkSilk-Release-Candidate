@@ -32,9 +32,9 @@ extern bool fOnlyTor;
 /* The help message mode determines what help message to show */
 enum HelpMessageMode
 {
-    HMM_BITCOIND,
-    HMM_BITCOIN_QT,
-    HMM_BITCOIN_CLI
+    HMM_DARKSILKD,
+    HMM_DARKSILK_QT,
+    HMM_DARKSILK_CLI
 };
 
 std::string HelpMessage(HelpMessageMode mode);

@@ -118,7 +118,7 @@ static const uint64_t nMinDiskSpace = 52428800;
 
 class CTxDB;
 class CTxIndex;
-//class CWalletInterface;
+class CValidationInterface;
 
 /** Get statistics from node state */
 bool GetNodeStateStats(NodeId nodeid, CNodeStateStats &stats);

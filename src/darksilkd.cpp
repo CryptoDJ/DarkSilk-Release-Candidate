@@ -6,10 +6,13 @@
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #include <boost/algorithm/string/predicate.hpp>
+#include <boost/filesystem.hpp>
+#include <boost/thread.hpp>
 
 #include "rpc/rpcserver.h"
 #include "rpc/rpcclient.h"
 #include "init.h"
+#include "noui.h"
 
 static bool fDaemon;
 
@@ -63,7 +66,7 @@ bool AppInit(int argc, char* argv[])
                   "  darksilkd [options] help                " + _("List commands") + "\n" +
                   "  darksilkd [options] help <command> " + _("Get help for a command") + "\n";
 
-            strUsage += "\n" + HelpMessage(HMM_BITCOIND);
+            strUsage += "\n" + HelpMessage(HMM_DARKSILKD);
 
             fprintf(stdout, "%s", strUsage.c_str());
             return false;

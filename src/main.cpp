@@ -21,7 +21,7 @@
 #include "init.h"
 #include "kernel.h"
 #include "txdb.h"
-#include "walletinterface.h"
+#include "validationinterface.h"
 #include "ui_interface.h"
 #include "anon/instantx/instantx.h"
 #include "anon/sandstorm/sandstorm.h"

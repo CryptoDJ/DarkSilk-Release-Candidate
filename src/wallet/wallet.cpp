@@ -17,7 +17,7 @@
 #include "consensus/validation.h"
 #include "base58.h"
 #include "checkpoints.h"
-//#include "walletinterface.h"
+#include "validationinterface.h"
 #include "coincontrol.h"
 #include "kernel.h"
 #include "net.h"
@@ -786,7 +786,7 @@ bool CWallet::AddToWalletIfInvolvingMe(const CTransaction& tx, const CBlock* pbl
                 wtx.mapValue.insert(mapNarr.begin(), mapNarr.end());
             // Get merkle branch if transaction was found in a block
             if (pblock)
-                BlockMerkleBranch(*pblock, NULL);
+                BlockMerkleRoot(*pblock, false);
             return AddToWallet(wtx);
         }
     }

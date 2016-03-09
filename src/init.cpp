@@ -35,7 +35,7 @@
 #include "anon/stormnode/spork.h"
 #include "smessage.h"
 #include "txdb-leveldb.h"
-#include "walletinterface.h"
+#include "validationinterface.h"
 
 #ifdef ENABLE_WALLET
 #include "db.h"
@@ -316,11 +316,11 @@ std::string HelpMessage(HelpMessageMode hmm)
 {
     string strUsage = _("Options:") + "\n";
     strUsage += "  -?                     " + _("This help message") + "\n";
-    strUsage += "  -conf=<file>           " + _("Specify configuration file (default: bitcoin.conf)") + "\n";
+    strUsage += "  -conf=<file>           " + _("Specify configuration file (default: darksilk.conf)") + "\n";
     strUsage += "  -datadir=<dir>         " + _("Specify data directory") + "\n";
     strUsage += "  -testnet               " + _("Use the test network") + "\n";
 
-    if(hmm == HMM_BITCOIND || hmm == HMM_BITCOIN_QT)
+    if(hmm == HMM_DARKSILKD || hmm == HMM_DARKSILK_QT)
     {
     strUsage += "  -pid=<file>            " + _("Specify pid file (default: darksilkd.pid)") + "\n";
     strUsage += "  -wallet=<dir>          " + _("Specify wallet file (within data directory)") + "\n";
@@ -373,12 +373,12 @@ std::string HelpMessage(HelpMessageMode hmm)
 #endif
     }
 
-    if (hmm == HMM_BITCOIN_QT)
+    if (hmm == HMM_DARKSILK_QT)
     {
         strUsage += "  -server                " + _("Accept command line and JSON-RPC commands") + "\n";
     }
 
-    if (hmm == HMM_BITCOIND){
+    if (hmm == HMM_DARKSILKD){
 #if ENABLE_ZMQ
    		strUsage += "\n" + _("ZeroMQ notification options:") + "\n";
    		strUsage += ("-zmqpubhashblock=<address>", _("Enable publish hash block in <address>"));
@@ -395,21 +395,21 @@ std::string HelpMessage(HelpMessageMode hmm)
    	}
 	}
 
-    if (hmm == HMM_BITCOIND || hmm == HMM_BITCOIN_CLI)
+    if (hmm == HMM_DARKSILKD || hmm == HMM_DARKSILK_CLI)
     {
         strUsage += "  -rpcconnect=<ip>       " + _("Send commands to node running on <ip> (default: 127.0.0.1)") + "\n";
     }
 
     strUsage += "  -rpcuser=<user>        " + _("Username for JSON-RPC connections") + "\n";
     strUsage += "  -rpcpassword=<pw>      " + _("Password for JSON-RPC connections") + "\n";
-    if (hmm == HMM_BITCOIND || hmm == HMM_BITCOIN_QT)
+    if (hmm == HMM_DARKSILKD || hmm == HMM_DARKSILK_QT)
     {
         strUsage += "  -rpcport=<port>        " + _("Listen for JSON-RPC connections on <port> (default: 31500 or testnet: 31800)") + "\n";
     } else {
         strUsage += "  -rpcport=<port>        " + _("Connect to JSON-RPC on <port> (default: 31500 or testnet: 31800)") + "\n";
     }
 
-    if(hmm == HMM_BITCOIND || hmm == HMM_BITCOIN_QT)
+    if(hmm == HMM_DARKSILKD || hmm == HMM_DARKSILK_QT)
     {
             strUsage += "  -whitebind=<addr>      " + _("Bind to given address and whitelist peers connecting to it. Use [host]:port notation for IPv6") + "\n";
     strUsage += "  -whitelist=<netmask>   " + _("Whitelist peers connecting from the given netmask or IP address. Can be specified multiple times.") + "\n";
@@ -468,7 +468,7 @@ std::string HelpMessage(HelpMessageMode hmm)
     strUsage += "  -blockmaxsize=<n>      " + strprintf(_("Set maximum block size in bytes (default: %d)"), MAX_BLOCK_SIZE_GEN) + "\n";
     strUsage += "  -blockprioritysize=<n> " + strprintf(_("Set maximum size of high-priority/low-fee transactions in bytes (default: %d)"), DEFAULT_BLOCK_PRIORITY_SIZE) + "\n";
 }
-    if (hmm == HMM_BITCOIND || hmm == HMM_BITCOIN_QT)
+    if (hmm == HMM_DARKSILKD || hmm == HMM_DARKSILK_QT)
     {
     strUsage += "\n" + _("SSL options: (see the DarkSilk Wiki for SSL setup instructions)") + "\n";
     strUsage += "  -rpcssl                                  " + _("Use OpenSSL (https) for JSON-RPC connections") + "\n";

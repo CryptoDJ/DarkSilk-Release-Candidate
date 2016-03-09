@@ -95,7 +95,7 @@ public:
 /** A CWallet is an extension of a keystore, which also maintains a set of transactions and balances,
  * and provides the ability to create new transactions.
  */
-class CWallet : public CCryptoKeyStore, public CWalletInterface
+class CWallet : public CCryptoKeyStore, public CValidationInterface
 {
 private:
     bool SelectCoinsForStaking(const CAmount& nTargetValue, unsigned int nSpendTime, std::set<std::pair<const CWalletTx*,unsigned int> >& setCoinsRet, CAmount& nValueRet) const;
@@ -417,8 +417,6 @@ public:
     bool SetAddressBookName(const CTxDestination& address, const std::string& strName);
 
     bool DelAddressBookName(const CTxDestination& address);
-
-    bool UpdatedTransaction(const uint256 &hashTx);
 
     void Inventory(const uint256 &hash)
     {

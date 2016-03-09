@@ -104,8 +104,6 @@ xLDFLAGS=$(LDHARDENING) $(LDFLAGS)
 
 OBJS= \
     obj/consensus/merkle.o \
-    obj/consensus/params.o \
-    obj/consensus/validation.o \
     obj/alert.o \
     obj/allocators.o \
     obj/cleanse.o \
@@ -121,10 +119,12 @@ OBJS= \
     obj/pubkey.o \
     obj/ecwrapper.o \
     obj/darksilkd.o \
+    obj/darksilk-cli.o \
     obj/keystore.o \
     obj/main.o \
     obj/net.o \
     obj/protocol.o \
+    obj/darksilk-cli.o \
     obj/rpc/rpcclient.o \
     obj/rpc/rpcprotocol.o \
     obj/rpc/rpcserver.o \
@@ -135,6 +135,9 @@ OBJS= \
     obj/rpc/rpcsmessage.o \
     obj/timedata.o \
     obj/script/script.o \
+    obj/script/compressor.o \
+    obj/script/interpreter.o \
+    obj/script/script_error.o \
     obj/sync.o \
     obj/txmempool.o \
     obj/util.o \
@@ -142,10 +145,14 @@ OBJS= \
     obj/noui.o \
     obj/kernel.o \
     obj/pbkdf2.o \
+    obj/prevector.o \
     obj/scrypt.o \
     obj/scrypt-arm.o \
     obj/scrypt-x86.o \
     obj/scrypt-x86_64.o \
+    obj/scheduler.o \
+    obj/random.o \
+    obj/rest.o \
     obj/chainparams.o \
     obj/anon/stealth/stealth.o \
     obj/anon/stormnode/activestormnode.o \
@@ -178,12 +185,6 @@ OBJS= \
     obj/undo.o \
     obj/uint256.o \
     obj/txdb.o \
-    obj/cryptkey.o \
-    obj/anon/blindtext/blindtext.o \
-    obj/rpc/rpcblindtext.o \
-    obj/rpc/rpccrypt.o \
-	obj/cryptogram/cryptogram.o \
-	obj/cryptogram/ecies.o \
     obj/compat/glibc_sanity.o \
     obj/compat/glibcxx_sanity.o \
     obj/crypto/argon2/argon2.o \

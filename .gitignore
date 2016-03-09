@@ -3,11 +3,11 @@
 *.exe
 src/*.exe
 src/*/*.exe
-src/bitcoin
-src/bitcoind
-src/bitcoin-cli
-src/test/test_bitcoin
-src/qt/test/test_bitcoin-qt
+src/darksilk
+src/darksilkd
+src/darksilk-cli
+src/test/test_darksilk
+src/qt/test/test_darksilk-qt
 
 Makefile.in
 aclocal.m4
@@ -17,8 +17,8 @@ config.status
 configure
 src/.deps/
 src/Makefile.in
-src/bitcoin-config.h
-src/bitcoin-config.h.in
+src/darksilk-config.h
+src/darksilk-config.h.in
 src/build-aux/
 src/qt/Makefile.in
 src/stamp-h1
@@ -49,7 +49,7 @@ src/qt/res/.dirstamp
 *.orig
 *.o
 *.patch
-.bitcoin
+.darksilk
 *.a
 *.pb.cc
 *.pb.h
@@ -64,12 +64,12 @@ src/qt/res/.dirstamp
 # Compilation and Qt preprocessor part
 *.qm
 Makefile
-bitcoin-qt
-Bitcoin-Qt.app
+darksilk-qt
+DarkSilk-Qt.app
 
 # Unit-tests
 Makefile.test
-bitcoin-qt_test
+darksilk-qt_test
 
 # Resources cpp
 qrc_*.cpp
@@ -84,7 +84,7 @@ build
 #lcov
 *.gcno
 /*.info
-test_bitcoin.coverage/
+test_darksilk.coverage/
 total.coverage/
 coverage_percent.txt
 
@@ -92,7 +92,7 @@ coverage_percent.txt
 linux-coverage-build
 linux-build
 win32-build
-qa/pull-tester/run-bitcoind-for-test.sh
+qa/pull-tester/run-darksilkd-for-test.sh
 qa/pull-tester/build-tests.sh
 
 !src/leveldb-*/Makefile

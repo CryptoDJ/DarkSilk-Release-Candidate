@@ -7,7 +7,7 @@ AM_LDFLAGS = $(PTHREAD_CFLAGS)
 noinst_LIBRARIES = libbitcoin.a
 
 <<<<<<< HEAD
-bin_PROGRAMS = bitcoind bitcoin-cli
+bin_PROGRAMS = darksilkd darksilk-cli
 =======
 if EMBEDDED_LEVELDB
 LEVELDB_CPPFLAGS += -I$(srcdir)/leveldb/include
@@ -24,19 +24,19 @@ $(LIBLEVELDB) $(LIBMEMENV):
           OPT="$(CXXFLAGS) $(CPPFLAGS) -D__STDC_LIMIT_MACROS"
 endif
 
-BITCOIN_CONFIG_INCLUDES=-I$(builddir)/config
-BITCOIN_INCLUDES=-I$(builddir) -I$(builddir)/obj $(BOOST_CPPFLAGS) $(LEVELDB_CPPFLAGS) $(CRYPTO_CFLAGS) $(SSL_CFLAGS)
+DARKSILK_CONFIG_INCLUDES=-I$(builddir)/config
+DARKSILK_INCLUDES=-I$(builddir) -I$(builddir)/obj $(BOOST_CPPFLAGS) $(LEVELDB_CPPFLAGS) $(CRYPTO_CFLAGS) $(SSL_CFLAGS)
 
-BITCOIN_INCLUDES += -I$(srcdir)/secp256k1/include
+DARKSILK_INCLUDES += -I$(srcdir)/secp256k1/include
 
-LIBBITCOIN_SERVER=libbitcoin_server.a
-LIBBITCOIN_WALLET=libbitcoin_wallet.a
-LIBBITCOIN_COMMON=libbitcoin_common.a
-LIBBITCOIN_CLI=libbitcoin_cli.a
-LIBBITCOIN_UTIL=libbitcoin_util.a
-LIBBITCOIN_CRYPTO=crypto/libbitcoin_crypto.a
-LIBBITCOIN_UNIVALUE=univalue/libbitcoin_univalue.a
-LIBBITCOINQT=qt/libbitcoinqt.a
+LIBDARKSILK_SERVER=libbitcoin_server.a
+LIBDARKSILK_WALLET=libbitcoin_wallet.a
+LIBDARKSILK_COMMON=libbitcoin_common.a
+LIBDARKSILK_CLI=libbitcoin_cli.a
+LIBDARKSILK_UTIL=libbitcoin_util.a
+LIBDARKSILK_CRYPTO=crypto/libbitcoin_crypto.a
+LIBDARKSILK_UNIVALUE=univalue/libbitcoin_univalue.a
+LIBDARKSILKQT=qt/libbitcoinqt.a
 LIBSECP256K1=secp256k1/libsecp256k1.la
 
 $(LIBSECP256K1): $(wildcard secp256k1/src/*) $(wildcard secp256k1/include/*)
@@ -52,39 +52,39 @@ EXTRA_LIBRARIES = \
   libbitcoin_server.a \
   libbitcoin_cli.a
 if ENABLE_WALLET
-BITCOIN_INCLUDES += $(BDB_CPPFLAGS)
+DARKSILK_INCLUDES += $(BDB_CPPFLAGS)
 EXTRA_LIBRARIES += libbitcoin_wallet.a
 endif
 if ENABLE_ZMQ
 EXTRA_LIBRARIES += libbitcoin_zmq.a
 endif
 
-if BUILD_BITCOIN_LIBS
+if BUILD_DARKSILK_LIBS
 lib_LTLIBRARIES = libbitcoinconsensus.la
-LIBBITCOIN_CONSENSUS=libbitcoinconsensus.la
+LIBDARKSILK_CONSENSUS=libbitcoinconsensus.la
 else
-LIBBITCOIN_CONSENSUS=
+LIBDARKSILK_CONSENSUS=
 endif
 
 bin_PROGRAMS =
 TESTS =
 
-if BUILD_BITCOIND
-  bin_PROGRAMS += bitcoind
+if BUILD_DARKSILKD
+  bin_PROGRAMS += darksilkd
 endif
 
-if BUILD_BITCOIN_UTILS
-  bin_PROGRAMS += bitcoin-cli bitcoin-tx
+if BUILD_DARKSILK_UTILS
+  bin_PROGRAMS += darksilk-cli darksilk-tx
 endif
 >>>>>>> e6a14b6... Add ZeroMQ support. Notify blocks and transactions via ZeroMQ
 
 SUBDIRS = . $(BUILD_QT) $(BUILD_TEST)
 DIST_SUBDIRS = . qt test
 .PHONY: FORCE
-# bitcoin core #
+# darksilk core #
 <<<<<<< HEAD
-BITCOIN_CORE_H = addrman.h alert.h allocators.h base58.h bignum.h \
-  bitcoinrpc.h bloom.h chainparams.h checkpoints.h checkqueue.h \
+DARKSILK_CORE_H = addrman.h alert.h allocators.h base58.h bignum.h \
+  darksilkrpc.h bloom.h chainparams.h checkpoints.h checkqueue.h \
   clientversion.h compat.h core.h crypter.h db.h hash.h init.h \
   key.h keystore.h leveldb.h limitedmap.h main.h miner.h mruset.h \
   netbase.h net.h protocol.h script.h serialize.h sync.h threadsafety.h \
@@ -96,7 +96,7 @@ JSON_H = json/json_spirit.h json/json_spirit_error_position.h \
   json/json_spirit_value.h json/json_spirit_writer.h \
   json/json_spirit_writer_template.h
 =======
-BITCOIN_CORE_H = \
+DARKSILK_CORE_H = \
   addrman.h \
   alert.h \
   amount.h \
@@ -199,7 +199,7 @@ obj/build.h: FORCE
 <<<<<<< HEAD
 version.o: obj/build.h
 
-libbitcoin_a_SOURCES = addrman.cpp alert.cpp allocators.cpp bitcoinrpc.cpp bloom.cpp \
+libbitcoin_a_SOURCES = addrman.cpp alert.cpp allocators.cpp darksilkrpc.cpp bloom.cpp \
   chainparams.cpp checkpoints.cpp core.cpp crypter.cpp db.cpp hash.cpp \
   init.cpp key.cpp keystore.cpp leveldb.cpp main.cpp miner.cpp \
   netbase.cpp net.cpp noui.cpp protocol.cpp rpcblockchain.cpp rpcdump.cpp \
@@ -208,8 +208,8 @@ libbitcoin_a_SOURCES = addrman.cpp alert.cpp allocators.cpp bitcoinrpc.cpp bloom
 =======
 libbitcoin_util_a-clientversion.$(OBJEXT): obj/build.h
 
-# server: shared between bitcoind and bitcoin-qt
-libbitcoin_server_a_CPPFLAGS = $(BITCOIN_INCLUDES) $(MINIUPNPC_CPPFLAGS) $(EVENT_CFLAGS) $(EVENT_PTHREADS_CFLAGS)
+# server: shared between darksilkd and darksilk-qt
+libbitcoin_server_a_CPPFLAGS = $(DARKSILK_INCLUDES) $(MINIUPNPC_CPPFLAGS) $(EVENT_CFLAGS) $(EVENT_PTHREADS_CFLAGS)
 libbitcoin_server_a_SOURCES = \
   addrman.cpp \
   alert.cpp \
@@ -240,12 +240,12 @@ libbitcoin_server_a_SOURCES = \
   txdb.cpp \
   txmempool.cpp \
   validationinterface.cpp \
-  $(BITCOIN_CORE_H)
+  $(DARKSILK_CORE_H)
 
 if ENABLE_ZMQ
-LIBBITCOIN_ZMQ=libbitcoin_zmq.a
+LIBDARKSILK_ZMQ=libbitcoin_zmq.a
 
-libbitcoin_zmq_a_CPPFLAGS = $(BITCOIN_INCLUDES)
+libbitcoin_zmq_a_CPPFLAGS = $(DARKSILK_INCLUDES)
 libbitcoin_zmq_a_SOURCES = \
   zmq/zmqabstractnotifier.cpp \
   zmq/zmqnotificationinterface.cpp \
@@ -253,9 +253,9 @@ libbitcoin_zmq_a_SOURCES = \
 endif
 
 
-# wallet: shared between bitcoind and bitcoin-qt, but only linked
+# wallet: shared between darksilkd and darksilk-qt, but only linked
 # when wallet enabled
-libbitcoin_wallet_a_CPPFLAGS = $(BITCOIN_INCLUDES)
+libbitcoin_wallet_a_CPPFLAGS = $(DARKSILK_INCLUDES)
 libbitcoin_wallet_a_SOURCES = \
   wallet/crypter.cpp \
   wallet/db.cpp \
@@ -264,10 +264,10 @@ libbitcoin_wallet_a_SOURCES = \
   wallet/wallet.cpp \
   wallet/wallet_ismine.cpp \
   wallet/walletdb.cpp \
-  $(BITCOIN_CORE_H)
+  $(DARKSILK_CORE_H)
 
 # crypto primitives library
-crypto_libbitcoin_crypto_a_CPPFLAGS = $(BITCOIN_CONFIG_INCLUDES)
+crypto_libbitcoin_crypto_a_CPPFLAGS = $(DARKSILK_CONFIG_INCLUDES)
 crypto_libbitcoin_crypto_a_SOURCES = \
   crypto/common.h \
   crypto/hmac_sha256.cpp \
@@ -291,8 +291,8 @@ univalue_libbitcoin_univalue_a_SOURCES = \
   univalue/univalue_read.cpp \
   univalue/univalue_write.cpp
 
-# common: shared between bitcoind, and bitcoin-qt and non-server tools
-libbitcoin_common_a_CPPFLAGS = $(BITCOIN_INCLUDES)
+# common: shared between darksilkd, and darksilk-qt and non-server tools
+libbitcoin_common_a_CPPFLAGS = $(DARKSILK_INCLUDES)
 libbitcoin_common_a_SOURCES = \
   amount.cpp \
   arith_uint256.cpp \
@@ -318,12 +318,12 @@ libbitcoin_common_a_SOURCES = \
   script/script_error.cpp \
   script/sign.cpp \
   script/standard.cpp \
-  $(BITCOIN_CORE_H)
+  $(DARKSILK_CORE_H)
 
 # util: shared between all executables.
 # This library *must* be included to make sure that the glibc
 # backward-compatibility objects and their sanity checks are linked.
-libbitcoin_util_a_CPPFLAGS = $(BITCOIN_INCLUDES)
+libbitcoin_util_a_CPPFLAGS = $(DARKSILK_INCLUDES)
 libbitcoin_util_a_SOURCES = \
   support/pagelocker.cpp \
   chainparamsbase.cpp \
@@ -340,67 +340,67 @@ libbitcoin_util_a_SOURCES = \
   utilmoneystr.cpp \
   utilstrencodings.cpp \
   utiltime.cpp \
-  $(BITCOIN_CORE_H)
+  $(DARKSILK_CORE_H)
 
 if GLIBC_BACK_COMPAT
 libbitcoin_util_a_SOURCES += compat/glibc_compat.cpp
 endif
 
-# cli: shared between bitcoin-cli and bitcoin-qt
-libbitcoin_cli_a_CPPFLAGS = $(BITCOIN_INCLUDES)
+# cli: shared between darksilk-cli and darksilk-qt
+libbitcoin_cli_a_CPPFLAGS = $(NEXUS_INCLUDES)
 libbitcoin_cli_a_SOURCES = \
   rpcclient.cpp \
 >>>>>>> e6a14b6... Add ZeroMQ support. Notify blocks and transactions via ZeroMQ
-  $(BITCOIN_CORE_H)
+  $(DARKSILK_CORE_H)
 
 nodist_libbitcoin_a_SOURCES = $(top_srcdir)/src/obj/build.h
 #
 
-# bitcoind binary #
-bitcoind_LDADD = libbitcoin.a leveldb/libleveldb.a leveldb/libmemenv.a \
+# darksilkd binary #
+darksilkd_LDADD = libbitcoin.a leveldb/libleveldb.a leveldb/libmemenv.a \
   $(BOOST_LIBS)
-bitcoind_SOURCES = bitcoind.cpp
+darksilkd_SOURCES = darksilkd.cpp
 #
 
 if TARGET_WINDOWS
-bitcoind_SOURCES += bitcoind-res.rc
+darksilkd_SOURCES += darksilkd-res.rc
 endif
 
 <<<<<<< HEAD
 AM_CPPFLAGS += $(BDB_CPPFLAGS)
-bitcoind_LDADD += $(BDB_LIBS)
+darksilkd_LDADD += $(BDB_LIBS)
 =======
-bitcoind_LDADD = \
-  $(LIBBITCOIN_SERVER) \
-  $(LIBBITCOIN_COMMON) \
-  $(LIBBITCOIN_UNIVALUE) \
-  $(LIBBITCOIN_UTIL) \
-  $(LIBBITCOIN_CRYPTO) \
+darksilkd_LDADD = \
+  $(LIBDARKSILK_SERVER) \
+  $(LIBDARKSILK_COMMON) \
+  $(LIBDARKSILK_UNIVALUE) \
+  $(LIBDARKSILK_UTIL) \
+  $(LIBDARKSILK_CRYPTO) \
   $(LIBLEVELDB) \
   $(LIBMEMENV) \
   $(LIBSECP256K1)
 
 if ENABLE_ZMQ
-bitcoind_LDADD += $(LIBBITCOIN_ZMQ) $(ZMQ_LIBS)
+darksilkd_LDADD += $(LIBDARKSILK_ZMQ) $(ZMQ_LIBS)
 endif
 
 if ENABLE_WALLET
-bitcoind_LDADD += libbitcoin_wallet.a
+darksilkd_LDADD += libbitcoin_wallet.a
 endif
 
-bitcoind_LDADD += $(BOOST_LIBS) $(BDB_LIBS) $(SSL_LIBS) $(CRYPTO_LIBS) $(MINIUPNPC_LIBS) $(EVENT_PTHREADS_LIBS) $(EVENT_LIBS)
+darksilkd_LDADD += $(BOOST_LIBS) $(BDB_LIBS) $(SSL_LIBS) $(CRYPTO_LIBS) $(MINIUPNPC_LIBS) $(EVENT_PTHREADS_LIBS) $(EVENT_LIBS)
 >>>>>>> e6a14b6... Add ZeroMQ support. Notify blocks and transactions via ZeroMQ
 
-# bitcoin-cli binary #
-bitcoin_cli_LDADD = libbitcoin.a leveldb/libleveldb.a leveldb/libmemenv.a \
+# darksilk-cli binary #
+darksilk_cli_LDADD = libbitcoin.a leveldb/libleveldb.a leveldb/libmemenv.a \
   $(BOOST_LIBS)
-bitcoin_cli_SOURCES = bitcoin-cli.cpp
+darksilk_cli_SOURCES = darksilk-cli.cpp
 #
 
 if TARGET_WINDOWS
-bitcoin_cli_SOURCES += bitcoin-cli-res.rc
+darksilk_cli_SOURCES += darksilk-cli-res.rc
 endif
-bitcoin_cli_LDADD += $(BDB_LIBS)
+darksilk_cli_LDADD += $(BDB_LIBS)
 
 leveldb/libleveldb.a: leveldb/libmemenv.a
 
@@ -409,7 +409,7 @@ leveldb/%.a:
 	  CC="$(CC)" PLATFORM=$(TARGET_OS) AR="$(AR)" $(LEVELDB_TARGET_FLAGS) \
 	  OPT="$(CXXFLAGS) $(CPPFLAGS)"
 
-qt/bitcoinstrings.cpp: $(libbitcoin_a_SOURCES)
+qt/darksilkstrings.cpp: $(libbitcoin_a_SOURCES)
 	@test -n $(XGETTEXT) || echo "xgettext is required for updating translations"
 	@cd $(top_srcdir); XGETTEXT=$(XGETTEXT) share/qt/extract_strings_qt.py
 
